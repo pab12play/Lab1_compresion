@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Lab1_compresion
 {
@@ -10,6 +11,72 @@ namespace Lab1_compresion
     {
         static void Main(string[] args)
         {
+            //args = new string[] { "-d","-f","test.txt" };
+            if (args.Length == 1 && args[0].ToLower().Equals("help") )
+            {
+                Console.WriteLine("Uso: .\\Lab1_compresion.exe [-d] [-c] [-f <archivo>]");
+                Console.WriteLine("");
+                Console.WriteLine("\t-d\tDescomprime un archivo");
+                Console.WriteLine("\t-c\tComprime un archivo");
+                Console.WriteLine("\t-f\tEspecifica la ruta y nombre del archivo");
+            }
+            else if (args.Length == 3)
+            {
+                switch (args[0].ToLower())
+                {
+                    case "-d":
+                        if (args[1].ToLower().Equals("-f"))
+                        {
+                            descomprimir(args[2]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
+                        }
+                        break;
+                    case "-c":
+                        if (args[1].ToLower().Equals("-f"))
+                        {
+                            comprimir(args[2]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
+            }
+        }
+
+        static void comprimir(string archivo)
+        {
+            try
+            {
+                byte[] bytes = System.IO.File.ReadAllBytes(archivo);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        static void descomprimir(string archivo)
+        {
+            try
+            {
+                byte[] bytes = System.IO.File.ReadAllBytes(archivo);
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
