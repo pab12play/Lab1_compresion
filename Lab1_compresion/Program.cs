@@ -107,7 +107,7 @@ namespace Lab1_compresion
                 {
                     byte caracter = bytes[i];
                     int contador = Convert.ToInt32(bytes[++i]);
-                    for(int j = 0; j < contador; j++)
+                    for (int j = 0; j < contador; j++)
                     {
                         RLE.Add(caracter);
                     }
