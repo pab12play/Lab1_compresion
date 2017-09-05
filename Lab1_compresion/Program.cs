@@ -67,7 +67,7 @@ namespace Lab1_compresion
                 int contador=1;
                 for (int i = 1; i < bytes.Length; i++)
                 {
-                    if (bytes[i] == anterior && contador < 256)
+                    if (bytes[i] == anterior && contador < 255)
                     {
                         contador++;
                     }
