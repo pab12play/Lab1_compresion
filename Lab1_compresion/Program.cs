@@ -59,8 +59,10 @@ namespace Lab1_compresion
         {
             try
             {
-                byte[] bytes = System.IO.File.ReadAllBytes(archivo);
-                List<byte> RLE = new List<byte>();
+                byte[] bytes = File.ReadAllBytes(archivo);
+                string nombre = Path.GetFileName(archivo);
+                List<byte> RLE = new List<byte>(Encoding.ASCII.GetBytes(nombre));
+                RLE.Add(Convert.ToByte((char)3));
                 byte anterior=bytes[0];
                 int contador=1;
                 for (int i = 1; i < bytes.Length; i++)
@@ -89,7 +91,7 @@ namespace Lab1_compresion
                 }
                 RLE.Add(anterior);
                 RLE.Add(Convert.ToByte(contador));
-                System.IO.File.WriteAllBytes("test.comp", RLE.ToArray());
+                File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo)+".comp", RLE.ToArray());
             }
             catch (FileNotFoundException e)
             {
@@ -101,9 +103,23 @@ namespace Lab1_compresion
         {
             try
             {
-                byte[] bytes = System.IO.File.ReadAllBytes(archivo);
+                byte[] bytes = File.ReadAllBytes(archivo);
                 List<byte> RLE = new List<byte>();
-                for (int i = 0; i < bytes.Length; i++)
+                string file="";
+                int i = 0;
+                foreach (byte b in bytes)
+                {
+                    i++;
+                    if (b == (char)3)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        file += Convert.ToChar(b);
+                    }
+                }
+                for (; i < bytes.Length; i++)
                 {
                     byte caracter = bytes[i];
                     int contador = Convert.ToInt32(bytes[++i]);
@@ -112,7 +128,7 @@ namespace Lab1_compresion
                         RLE.Add(caracter);
                     }
                 }
-                System.IO.File.WriteAllBytes("test.txt", RLE.ToArray());
+                File.WriteAllBytes(file, RLE.ToArray());
             }
             catch (FileNotFoundException e)
             {
