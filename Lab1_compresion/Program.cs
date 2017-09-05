@@ -11,7 +11,7 @@ namespace Lab1_compresion
     {
         static void Main(string[] args)
         {
-            args = new string[] { "-d","-f","test.comp" };
+            args = new string[] { "-c","-f","test.txt" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
                 Console.WriteLine("Uso: .\\Lab1_compresion.exe [-d] [-c] [-f <archivo>]");
@@ -67,19 +67,9 @@ namespace Lab1_compresion
                 int contador=1;
                 for (int i = 1; i < bytes.Length; i++)
                 {
-                    if (bytes[i] == anterior)
+                    if (bytes[i] == anterior && contador < 256)
                     {
-                        if (contador >= 256)
-                        {
-                            RLE.Add(anterior);
-                            RLE.Add(Convert.ToByte(contador));
-                            contador = 1;
-                            anterior = bytes[i];
-                        }
-                        else
-                        {
-                            contador++;
-                        }
+                        contador++;
                     }
                     else
                     {
