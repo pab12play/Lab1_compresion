@@ -14,6 +14,7 @@ namespace Lab1_compresion
             //args = new string[] { "-c","-f","test.txt" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
+                Console.WriteLine("Hola");
                 Console.WriteLine("Uso: .\\Lab1_compresion.exe [-d] [-c] [-f <archivo>]");
                 Console.WriteLine("");
                 Console.WriteLine("\t-d\tDescomprime un archivo");
