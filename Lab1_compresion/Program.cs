@@ -11,7 +11,7 @@ namespace Lab1_compresion
     {
         static void Main(string[] args)
         {
-            args = new string[] { "-c","-f","test.txt" };
+            //args = new string[] { "-c","-f","test.txt" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
                 Console.WriteLine("Uso: .\\Lab1_compresion.exe [-d] [-c] [-f <archivo>]");
