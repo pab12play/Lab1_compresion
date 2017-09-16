@@ -87,14 +87,7 @@ namespace Lab1_compresion
                         anterior = bytes[i];
                     }
                 }
-                double ratio = sizeAfter / sizeBefore;
-                double factor = sizeBefore / sizeAfter;
-                Console.WriteLine("Tamaño antes: " + sizeBefore);
-                Console.WriteLine("Tamaño despues: " + sizeAfter);
-                Console.WriteLine("Ratio de compresion: " + ratio);
-                Console.WriteLine("Factor de compresion: " + factor);
-                double porcentaje = ((sizeBefore - sizeAfter) / sizeBefore)*100;
-                Console.WriteLine("Porcentaje de compresion: " + porcentaje);
+                mostrar();
                 RLE.Add(anterior);
                 RLE.Add(Convert.ToByte(contador));
                 File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo)+".comp", RLE.ToArray());
@@ -137,7 +130,9 @@ namespace Lab1_compresion
                         RLE.Add(caracter);
                     }
                 }
+                mostrar();
                 File.WriteAllBytes(file, RLE.ToArray());
+
             }
             catch (FileNotFoundException e)
             {
@@ -145,6 +140,17 @@ namespace Lab1_compresion
             }
         }
 
+        static void mostrar()
+        {
+            double ratio = sizeAfter / sizeBefore;
+            double factor = sizeBefore / sizeAfter;
+            Console.WriteLine("Tamaño antes: " + sizeBefore);
+            Console.WriteLine("Tamaño despues: " + sizeAfter);
+            Console.WriteLine("Ratio de compresion: " + Math.Round(ratio, 2));
+            Console.WriteLine("Factor de compresion: " + Math.Round(factor, 2));
+            double porcentaje = ((sizeBefore - sizeAfter) / sizeBefore) * 100;
+            Console.WriteLine("Porcentaje de compresion: " + Math.Round(porcentaje, 2));
+        }
 
     }
 }
