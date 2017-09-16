@@ -9,6 +9,7 @@ namespace Lab1_compresion
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
             //args = new string[] { "-c","-f","test.txt" };
@@ -39,6 +40,8 @@ namespace Lab1_compresion
                         if (args[1].ToLower().Equals("-f"))
                         {
                             comprimir(args[2]);
+                            
+
                         }
                         else
                         {
@@ -55,12 +58,15 @@ namespace Lab1_compresion
                 Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
             }
         }
+        static double sizeAfter = 0;
+        static double sizeBefore = 0;
 
         static void comprimir(string archivo)
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(archivo);
+                sizeBefore = bytes.Length;
                 string nombre = Path.GetFileName(archivo);
                 List<byte> RLE = new List<byte>(Encoding.ASCII.GetBytes(nombre));
                 RLE.Add(Convert.ToByte((char)3));
@@ -71,6 +77,7 @@ namespace Lab1_compresion
                     if (bytes[i] == anterior && contador < 255)
                     {
                         contador++;
+                        sizeAfter++;
                     }
                     else
                     {
@@ -80,9 +87,18 @@ namespace Lab1_compresion
                         anterior = bytes[i];
                     }
                 }
+                double ratio = sizeAfter / sizeBefore;
+                double factor = sizeBefore / sizeAfter;
+                Console.WriteLine("Tamaño antes: " + sizeBefore);
+                Console.WriteLine("Tamaño despues: " + sizeAfter);
+                Console.WriteLine("Ratio de compresion: " + ratio);
+                Console.WriteLine("Factor de compresion: " + factor);
+                double porcentaje = ((sizeBefore - sizeAfter) / sizeBefore)*100;
+                Console.WriteLine("Porcentaje de compresion: " + porcentaje);
                 RLE.Add(anterior);
                 RLE.Add(Convert.ToByte(contador));
                 File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo)+".comp", RLE.ToArray());
+                
             }
             catch (FileNotFoundException e)
             {
@@ -114,6 +130,8 @@ namespace Lab1_compresion
                 {
                     byte caracter = bytes[i];
                     int contador = Convert.ToInt32(bytes[++i]);
+
+                    
                     for (int j = 0; j < contador; j++)
                     {
                         RLE.Add(caracter);
@@ -126,5 +144,7 @@ namespace Lab1_compresion
                 Console.WriteLine(e.Message);
             }
         }
+
+
     }
 }
