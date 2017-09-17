@@ -25,6 +25,27 @@ namespace Lab1_compresion
             this.der = der;
         }
 
+        public nodo(char caracter)
+        {
+            this.caracter = caracter;
+        }
+
+        public bool esHoja()
+        {
+            if (izq != null)
+            {
+                return false;
+            }
+            else if(der != null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public char Caracter { get => caracter; set => caracter = value; }
         internal nodo Izq { get => izq; set => izq = value; }
         internal nodo Der { get => der; set => der = value; }

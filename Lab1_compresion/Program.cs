@@ -57,7 +57,36 @@ namespace Lab1_compresion
             {
                 Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
             }
+            nodo prueba1 = new nodo('a');
+            prueba(prueba1);
         }
+
+
+        static void prueba(nodo nodo1)
+        {
+            using (StreamWriter file = new StreamWriter("prueba.txt"))
+            {
+                preorder(nodo1, file);
+            }
+        }
+
+        static void preorder(nodo nodo1, StreamWriter file)
+        {
+            if (nodo1.esHoja())
+            {
+                //escribir 0
+                file.Write(nodo1.Caracter);
+                file.Write(nodo1.Izq);
+                file.Write(nodo1.Der);
+            }
+            else
+            {
+                //escribir 1
+                preorder(nodo1.Izq,file);
+                preorder(nodo1.Der, file);
+            }
+        }
+
         static double sizeAfter = 0;
         static double sizeBefore = 0;
 
