@@ -12,7 +12,7 @@ namespace Lab1_compresion
         
         static void Main(string[] args)
         {
-            //args = new string[] { "-c","-f","test.txt" };
+            //args = new string[] { "-c","-f","image.bmp" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
                 Console.WriteLine("Hola");
@@ -77,7 +77,6 @@ namespace Lab1_compresion
                     if (bytes[i] == anterior && contador < 255)
                     {
                         contador++;
-                        sizeAfter++;
                     }
                     else
                     {
@@ -87,9 +86,10 @@ namespace Lab1_compresion
                         anterior = bytes[i];
                     }
                 }
-                mostrar();
                 RLE.Add(anterior);
                 RLE.Add(Convert.ToByte(contador));
+                sizeAfter = RLE.Count();
+                mostrar();
                 File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo)+".comp", RLE.ToArray());
                 
             }
