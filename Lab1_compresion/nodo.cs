@@ -11,23 +11,27 @@ namespace Lab1_compresion
         nodo izq;
         nodo der;
         char caracter;
+        double probabilidad;
 
-        public nodo(nodo izq, nodo der, char caracter)
+        public nodo(nodo izq, nodo der, char caracter, double probabilidad)
         {
             this.izq = izq;
             this.der = der;
             this.caracter = caracter;
+            this.probabilidad = probabilidad;
         }
 
-        public nodo(nodo izq, nodo der)
+        public nodo(nodo izq, nodo der, double probabilidad)
         {
             this.izq = izq;
             this.der = der;
+            this.probabilidad = probabilidad;
         }
 
-        public nodo(char caracter)
+        public nodo(char caracter, double probabilidad)
         {
             this.caracter = caracter;
+            this.probabilidad = probabilidad;
         }
 
         public bool esHoja()
@@ -36,7 +40,7 @@ namespace Lab1_compresion
             {
                 return false;
             }
-            else if(der != null)
+            else if (der != null)
             {
                 return false;
             }
@@ -49,5 +53,6 @@ namespace Lab1_compresion
         public char Caracter { get => caracter; set => caracter = value; }
         internal nodo Izq { get => izq; set => izq = value; }
         internal nodo Der { get => der; set => der = value; }
+        public double Probabilidad { get => probabilidad; set => probabilidad = value; }
     }
 }
