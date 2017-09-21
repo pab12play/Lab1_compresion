@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lab1_compresion
 {
-    class nodo
+     class nodo
     {
         nodo izq;
         nodo der;
