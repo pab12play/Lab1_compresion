@@ -12,7 +12,6 @@ namespace Lab1_compresion
         
         static void Main(string[] args)
         {
-            //args = new string[] { "-c","-f","image.bmp" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
                 Console.WriteLine("Hola");
@@ -40,8 +39,6 @@ namespace Lab1_compresion
                         if (args[1].ToLower().Equals("-f"))
                         {
                             comprimir(args[2]);
-                            
-
                         }
                         else
                         {
@@ -130,9 +127,7 @@ namespace Lab1_compresion
                         RLE.Add(caracter);
                     }
                 }
-                mostrar();
                 File.WriteAllBytes(file, RLE.ToArray());
-
             }
             catch (FileNotFoundException e)
             {
