@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections;
 
 namespace Lab1_compresion
 {
@@ -48,6 +49,17 @@ namespace Lab1_compresion
                             Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         }
                         break;
+                    case "-h":
+                        if(args[1].ToLower().Equals("-f"))
+                        {
+                            huffman(args[2]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
+                        }
+                        break;
+
                     default:
                         Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         break;
@@ -58,6 +70,8 @@ namespace Lab1_compresion
                 Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
             }
         }
+
+
 
         static double sizeAfter = 0;
         static double sizeBefore = 0;
@@ -153,6 +167,7 @@ namespace Lab1_compresion
             Console.WriteLine("Porcentaje de compresion: " + Math.Round(porcentaje, 2));
         }
 
+<<<<<<< HEAD
         static void preorder(nodo nodo1, StreamWriter file)
         {
             if (nodo1.esHoja())
@@ -173,5 +188,52 @@ namespace Lab1_compresion
             }
         }
 
+=======
+        static void huffman(string archivo)
+        {
+            //string input = "jkljakldjlajlajldkjalkjljijuwijiwjowjojlannadjaijaonannnniwiiiiiiwwwweweeeee";
+            arbolHuffman arbol = new arbolHuffman();
+
+            //leer el archivo
+            string bytes = File.ReadAllText(archivo);
+
+            arbol.construir(bytes);
+            // Compresion
+            BitArray bitComprimido = arbol.comprimir(bytes);
+            string bitaCadena = devolver(bitComprimido);
+            Console.Write("Comprimido: ");
+
+            foreach (bool bit in bitComprimido)
+            {
+                Console.Write((bit ? 1 : 0) + "");
+            }
+            File.WriteAllText(Path.GetFileNameWithoutExtension(archivo) + ".comp", bitaCadena);
+            Console.WriteLine();
+            // Descompresion
+            string decoded = arbol.descomprimir(bitComprimido);
+
+            Console.WriteLine("Decomprimido: " + decoded);
+
+            Console.ReadLine();
+        }
+
+        static string devolver(BitArray ba)
+        {
+            string final = "";
+            foreach(bool b in ba)
+            {
+                if(b)
+                {
+                    final += 1.ToString();
+                }
+                else
+                {
+                    final += 0.ToString();
+                }
+            }
+            return final;
+        }
+        
+>>>>>>> origin/huffman
     }
 }
