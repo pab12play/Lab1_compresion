@@ -10,10 +10,8 @@ namespace Lab1_compresion
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
-            //args = new string[] { "-c","-f","image.bmp" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
                 Console.WriteLine("Hola");
@@ -49,17 +47,6 @@ namespace Lab1_compresion
                             Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         }
                         break;
-                    case "-h":
-                        if(args[1].ToLower().Equals("-f"))
-                        {
-                            huffman(args[2]);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
-                        }
-                        break;
-
                     default:
                         Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         break;
@@ -69,47 +56,14 @@ namespace Lab1_compresion
             {
                 Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
             }
-            nodo prueba1 = new nodo('a');
-            prueba(prueba1);
         }
 
-
-        static void prueba(nodo nodo1)
-        {
-            using (StreamWriter file = new StreamWriter("prueba.txt"))
-            {
-                preorder(nodo1, file);
-            }
-        }
-
-        static void preorder(nodo nodo1, StreamWriter file)
-        {
-            if (nodo1.esHoja())
-            {
-                //escribir 0
-                file.Write(nodo1.Caracter);
-                file.Write(nodo1.Izq);
-                file.Write(nodo1.Der);
-            }
-            else
-            {
-                //escribir 1
-                preorder(nodo1.Izq,file);
-                preorder(nodo1.Der, file);
-            }
-        }
-
-
-
-        static double sizeAfter = 0;
-        static double sizeBefore = 0;
 
         static void comprimir(string archivo)
         {
             try
             {
                 byte[] bytes = File.ReadAllBytes(archivo);
-                sizeBefore = bytes.Length;
                 string nombre = Path.GetFileName(archivo);
                 List<byte> RLE = new List<byte>(Encoding.ASCII.GetBytes(nombre));
                 RLE.Add(Convert.ToByte((char)3));
@@ -131,10 +85,7 @@ namespace Lab1_compresion
                 }
                 RLE.Add(anterior);
                 RLE.Add(Convert.ToByte(contador));
-                sizeAfter = RLE.Count();
-                mostrar();
                 File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo)+".comp", RLE.ToArray());
-                
             }
             catch (FileNotFoundException e)
             {
@@ -173,71 +124,12 @@ namespace Lab1_compresion
                         RLE.Add(caracter);
                     }
                 }
-                mostrar();
                 File.WriteAllBytes(file, RLE.ToArray());
-
             }
             catch (FileNotFoundException e)
             {
                 Console.WriteLine(e.Message);
             }
-        }
-
-        static void mostrar()
-        {
-            double ratio = sizeAfter / sizeBefore;
-            double factor = sizeBefore / sizeAfter;
-            Console.WriteLine("Tamaño antes: " + sizeBefore);
-            Console.WriteLine("Tamaño despues: " + sizeAfter);
-            Console.WriteLine("Ratio de compresion: " + Math.Round(ratio, 2));
-            Console.WriteLine("Factor de compresion: " + Math.Round(factor, 2));
-            double porcentaje = ((sizeBefore - sizeAfter) / sizeBefore) * 100;
-            Console.WriteLine("Porcentaje de compresion: " + Math.Round(porcentaje, 2));
-        }
-
-        static void huffman(string archivo)
-        {
-            //string input = "jkljakldjlajlajldkjalkjljijuwijiwjowjojlannadjaijaonannnniwiiiiiiwwwweweeeee";
-            arbolHuffman arbol = new arbolHuffman();
-
-            //leer el archivo
-            string bytes = File.ReadAllText(archivo);
-
-            arbol.construir(bytes);
-            // Compresion
-            BitArray bitComprimido = arbol.comprimir(bytes);
-            string bitaCadena = devolver(bitComprimido);
-            Console.Write("Comprimido: ");
-
-            foreach (bool bit in bitComprimido)
-            {
-                Console.Write((bit ? 1 : 0) + "");
-            }
-            File.WriteAllText(Path.GetFileNameWithoutExtension(archivo) + ".comp", bitaCadena);
-            Console.WriteLine();
-            // Descompresion
-            string decoded = arbol.descomprimir(bitComprimido);
-
-            Console.WriteLine("Decomprimido: " + decoded);
-
-            Console.ReadLine();
-        }
-
-        static string devolver(BitArray ba)
-        {
-            string final = "";
-            foreach(bool b in ba)
-            {
-                if(b)
-                {
-                    final += 1.ToString();
-                }
-                else
-                {
-                    final += 0.ToString();
-                }
-            }
-            return final;
         }
         
     }
