@@ -13,14 +13,15 @@ namespace Lab1_compresion
         
         static void Main(string[] args)
         {
-            //args = new string[] { "-c","-f","image.bmp" };
             if (args.Length == 1 && args[0].ToLower().Equals("help") )
             {
                 Console.WriteLine("Hola");
-                Console.WriteLine("Uso: .\\Lab1_compresion.exe [-d] [-c] [-f <archivo>]");
+                Console.WriteLine("Uso: .\\Lab1_compresion.exe [-d] [-c] [-hd] [-hc] [-f <archivo>]");
                 Console.WriteLine("");
                 Console.WriteLine("\t-d\tDescomprime un archivo");
                 Console.WriteLine("\t-c\tComprime un archivo");
+                Console.WriteLine("\t-hd\tDescomprime un archivo usando huffman");
+                Console.WriteLine("\t-hc\tComprime un archivo usando huffman");
                 Console.WriteLine("\t-f\tEspecifica la ruta y nombre del archivo");
             }
             else if (args.Length == 3)
@@ -41,25 +42,32 @@ namespace Lab1_compresion
                         if (args[1].ToLower().Equals("-f"))
                         {
                             comprimir(args[2]);
-                            
-
                         }
                         else
                         {
                             Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         }
                         break;
-                    case "-h":
+                    case "-hc":
                         if(args[1].ToLower().Equals("-f"))
                         {
-                            huffman(args[2]);
+                            huffman_compresion(args[2]);
                         }
                         else
                         {
                             Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         }
                         break;
-
+                    case "-hd":
+                        if (args[1].ToLower().Equals("-f"))
+                        {
+                            huffman_descompresion(args[2]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
+                        }
+                        break;
                     default:
                         Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
                         break;
@@ -70,9 +78,7 @@ namespace Lab1_compresion
                 Console.WriteLine("Por favor ingrese una opción correcta. Consulte la opción 'help' para ayuda");
             }
         }
-
-
-
+        
         static double sizeAfter = 0;
         static double sizeBefore = 0;
 
@@ -106,7 +112,6 @@ namespace Lab1_compresion
                 sizeAfter = RLE.Count();
                 mostrar();
                 File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo)+".comp", RLE.ToArray());
-                
             }
             catch (FileNotFoundException e)
             {
@@ -145,9 +150,7 @@ namespace Lab1_compresion
                         RLE.Add(caracter);
                     }
                 }
-                mostrar();
                 File.WriteAllBytes(file, RLE.ToArray());
-
             }
             catch (FileNotFoundException e)
             {
@@ -166,55 +169,159 @@ namespace Lab1_compresion
             double porcentaje = ((sizeBefore - sizeAfter) / sizeBefore) * 100;
             Console.WriteLine("Porcentaje de compresion: " + Math.Round(porcentaje, 2));
         }
-
-<<<<<<< HEAD
-        static void preorder(nodo nodo1, StreamWriter file)
+        
+        static void preorder(nodoH nodo1,ref string file)
         {
             if (nodo1.esHoja())
             {
-                file.Write("0");
-                file.Write(nodo1.Caracter);
-                file.Write(nodo1.Probabilidad);
-                file.Write((char)3);
+                file = file + "0" + nodo1.simbolo + nodo1.Frecuencias+(char)4;
             }
             else
             {
-                file.Write("1");
-                file.Write(nodo1.Caracter);
-                file.Write(nodo1.Probabilidad);
-                file.Write((char)3);
-                preorder(nodo1.Izq, file);
-                preorder(nodo1.Der, file);
+                file = file + "1" + nodo1.simbolo + nodo1.Frecuencias+(char)4;
+                preorder(nodo1.izquierda,ref file);
+                preorder(nodo1.derecha,ref file);
             }
         }
-
-=======
-        static void huffman(string archivo)
+        
+        static void huffman_compresion(string archivo)
         {
-            //string input = "jkljakldjlajlajldkjalkjljijuwijiwjowjojlannadjaijaonannnniwiiiiiiwwwweweeeee";
             arbolHuffman arbol = new arbolHuffman();
 
             //leer el archivo
             string bytes = File.ReadAllText(archivo);
-
+            sizeBefore = bytes.Length;
             arbol.construir(bytes);
             // Compresion
             BitArray bitComprimido = arbol.comprimir(bytes);
             string bitaCadena = devolver(bitComprimido);
-            Console.Write("Comprimido: ");
 
-            foreach (bool bit in bitComprimido)
+            List<byte> escribir = Encoding.ASCII.GetBytes(Path.GetFileName(archivo)+(char)3+bitComprimido.Length+(char)3).ToList();
+            string arbol1 = "";
+            preorder(arbol.Root,ref arbol1);
+            escribir.AddRange(Encoding.ASCII.GetBytes(arbol1+(char)5).ToList());
+            List<byte> huffman = convertir_bytes(bitaCadena);
+            escribir.AddRange(huffman);
+            sizeAfter = huffman.Count;
+
+            mostrar();
+            File.WriteAllBytes(Path.GetFileNameWithoutExtension(archivo) + ".comp", escribir.ToArray());
+        }
+
+        static void huffman_descompresion(string archivo)
+        {
+            byte[] bytes = File.ReadAllBytes(archivo);
+            int contador = 0;
+            string nombre = "";
+            string size = "";
+            List<string> arbolString = new List<string>();
+            List<byte> mensaje = new List<byte>();
+            for(int i = 0; i<bytes.Length; i++)
             {
-                Console.Write((bit ? 1 : 0) + "");
+                switch (contador)
+                {
+                    case 0:
+                        if (bytes[i] == (char)3)
+                        {
+                            contador++;
+                        }
+                        else
+                        {
+                            nombre = nombre + Convert.ToChar(bytes[i]);
+                        }
+                        break;
+                    case 1:
+                        if (bytes[i] == (char)3)
+                        {
+                            contador++;
+                        }
+                        else
+                        {
+                            size = size + Convert.ToChar(bytes[i]);
+                        }
+                        break;
+                    case 2:
+                        if (bytes[i] == (char)5)
+                        {
+                            contador++;
+                        }
+                        else
+                        {
+                            string nodo = ""+ Convert.ToChar(bytes[i]) + Convert.ToChar(bytes[++i]);
+                            i++;
+                            while (bytes[i] != (char)4)
+                            {
+                                nodo = nodo + Convert.ToChar(bytes[i]);
+                                i++;
+                            }
+                            arbolString.Add(nodo);
+                        }
+                        break;
+                    case 3:
+                        mensaje.Add(bytes[i]);
+                        break;
+                }
             }
-            File.WriteAllText(Path.GetFileNameWithoutExtension(archivo) + ".comp", bitaCadena);
-            Console.WriteLine();
+            arbolHuffman arbol = new arbolHuffman();
+            arbol.Root = arbol.cargar(arbolString);
+            
             // Descompresion
-            string decoded = arbol.descomprimir(bitComprimido);
+            string decoded = arbol.descomprimir(convertir_string(mensaje.ToArray(),int.Parse(size)));
 
-            Console.WriteLine("Decomprimido: " + decoded);
+            File.WriteAllText(nombre, decoded);
+        }
 
-            Console.ReadLine();
+        static BitArray convertir_string(byte[] bt,int size)
+        {
+            List<bool> bit = new List<bool>();
+            foreach (byte b in bt)
+            {
+                string byte1 = Convert.ToString(b, 2).PadLeft(8, '0');
+                foreach(char c in byte1)
+                {
+                    if (c == '0')
+                    {
+                        bit.Add(false);
+                    }
+                    else
+                    {
+                        bit.Add(true);
+                    }
+                }
+            }
+            int cantidad = bit.Count-size;
+            bit.RemoveRange(size, cantidad);
+            return new BitArray(bit.ToArray());
+        }
+
+        static List<byte> convertir_bytes(string cadena)
+        {
+            int contador = 0;
+            List<byte> huffman = new List<byte>();
+            string byte1 = "";
+            foreach (char caracter in cadena)
+            {
+                if (contador < 8)
+                {
+                    byte1 = byte1 + caracter;
+                    contador++;
+                }
+                else
+                {
+                    huffman.Add(Convert.ToByte(byte1, 2));
+                    byte1 = caracter.ToString();
+                    contador = 1;
+                }
+            }
+            if (!byte1.Equals(""))
+            {
+                for (int i = 8 - byte1.Length; i > 0; i--)
+                {
+                    byte1 = byte1 + "0";
+                }
+            }
+            huffman.Add(Convert.ToByte(byte1, 2));
+            return huffman;
         }
 
         static string devolver(BitArray ba)
@@ -234,6 +341,5 @@ namespace Lab1_compresion
             return final;
         }
         
->>>>>>> origin/huffman
     }
 }
